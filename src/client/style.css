@@ -9,3 +9,9 @@
 #connected {
   display: none;
 }
+
+#mouseArea {
+  width: 360px;
+  height: 240px;
+  background-color: black;
+}
