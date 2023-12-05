@@ -9,7 +9,15 @@
   </head>
   <body>
     <div id="connected">
-      <div id="mouseArea"></div>
+      <form onsubmit="commandInputSubmit(event)">
+        <input
+          id="commandInput"
+          type="text"
+          placeholder="Enter command"
+          onsubmit="commandInputSubmit(event)"
+        />
+        <button type="submit">Run</button>
+      </form>
       <button id="disconnectButton">Disconnect</button>
     </div>
 

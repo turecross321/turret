@@ -3,12 +3,13 @@ const app = express();
 const server = require("http").createServer(app);
 const WebSocket = require("ws");
 const path = require("path");
+const websocketController = require("./websocket-controller");
+const config = require("./config").config;
 
 const wss = new WebSocket.Server({ server: server });
-
 const maxClients = 1;
-let clients = [];
 
+let clients = [];
 wss.on("connection", function connection(ws) {
   if (clients.length >= maxClients) {
     console.log("denying additional client");
@@ -19,7 +20,9 @@ wss.on("connection", function connection(ws) {
   clients.push(ws);
   console.log("new client connected");
 
-  ws.onmessage = processMessage;
+  ws.onmessage = function (message) {
+    websocketController.processMessage(ws, message);
+  };
 
   ws.on("close", function close(code, reason) {
     clients = clients.filter(function (item) {
@@ -27,30 +30,6 @@ wss.on("connection", function connection(ws) {
     });
   });
 });
-
-function processMessage(message) {
-  args = message.data.split(" ").slice(1);
-
-  if (message.data.startsWith("SERVO")) {
-    const x = args[0];
-    const y = args[1];
-    setServos(x, y);
-  } else if (message.data.startsWith("SHOOT")) {
-    const duration = args[0];
-    shoot(duration);
-  }
-}
-
-function setServos(x, y) {
-  console.log("x: %d| y: %d", x, y);
-}
-
-function shoot(duration) {
-  console.log("Starting to shoot");
-  setTimeout(function () {
-    console.log("STOP");
-  }, duration);
-}
 
 app.get("/", function (req, res) {
   res.redirect("/client/index.html");
@@ -60,4 +39,4 @@ app.get("/client/:resource", function (req, res) {
   res.sendFile(path.join(__dirname, "/client/", req.params.resource));
 });
 
-server.listen(3000, () => console.log("Listen on port 3000"));
+server.listen(config.port, () => console.log("Listen on port " + config.port));
