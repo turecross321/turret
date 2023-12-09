@@ -11,7 +11,13 @@ function connect() {
   socket.addEventListener("open", onConnect);
   socket.addEventListener("close", onClose);
   socket.addEventListener("message", function (event) {
-    logMessage("SERVER", event.data);
+    res = JSON.parse(event.data);
+
+    if (res.video) {
+      updateVideo(res.video);
+    } else if (res.message) {
+      logMessage("SERVER", res.message);
+    }
   });
 }
 
@@ -65,4 +71,11 @@ function commandInputSubmit(event) {
 function runCommand(command) {
   logMessage("CLIENT", command);
   socket.send(command);
+}
+
+let video = undefined;
+function updateVideo(frame) {
+  console.log("oda");
+  video ??= document.getElementById("camera-view");
+  video.src = "data:image/png;base64," + frame;
 }

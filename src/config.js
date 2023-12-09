@@ -1,4 +1,5 @@
 exports.config = {
+  cameraFPS: 60,
   port: 5000,
   pin_servo_x: 0,
   pin_servo_y: 1,

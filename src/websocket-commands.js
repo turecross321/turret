@@ -16,12 +16,16 @@ exports.processMessage = (ws, message) => {
       setShooting(value);
       break;
     case "help":
-      ws.send("this guy needs help");
+      sendMessage(ws, "yall suck");
       break;
     default:
-      ws.send("Unknown command. Type 'HELP' for help.");
+      sendMessage(ws, "Unknown command. Type 'HELP' for help.");
   }
 };
+
+function sendMessage(ws, content) {
+  ws.send({ message: content });
+}
 
 function setServos(x, y) {
   console.log("x: %d| y: %d", x, y);
