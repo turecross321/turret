@@ -75,7 +75,6 @@ function runCommand(command) {
 
 let video = undefined;
 function updateVideo(frame) {
-  console.log("oda");
   video ??= document.getElementById("camera-view");
   video.src = "data:image/png;base64," + frame;
 }

@@ -35,7 +35,9 @@ wss.on("connection", function connection(ws) {
 
   setInterval(() => {
     let frame = vCap.read();
-    const encoded = cv.imencode(".jpg", frame).toString("base64");
+    const encoded = cv
+      .imencode(".jpg", frame, [cv.IMWRITE_JPEG_OPTIMIZE, 80])
+      .toString("base64");
     ws.send(JSON.stringify({ video: encoded }));
   }, 1000 / config.cameraFPS);
 });
