@@ -10,7 +10,9 @@ const cv = require("@u4/opencv4nodejs");
 const wss = new WebSocket.Server({ server: server });
 const maxClients = 1;
 
-const vCap = new cv.VideoCapture(0);
+const vCap = new cv.VideoCapture(config.cameraPort);
+vCap.set(cv.CAP_PROP_FRAME_WIDTH, config.cameraWidth);
+vCap.set(cv.CAP_PROP_FRAME_HEIGHT, config.cameraHeight);
 
 let clients = [];
 wss.on("connection", function connection(ws) {
@@ -36,7 +38,10 @@ wss.on("connection", function connection(ws) {
   setInterval(() => {
     let frame = vCap.read();
     const encoded = cv
-      .imencode(".jpg", frame, [cv.IMWRITE_JPEG_OPTIMIZE, 80])
+      .imencode(".jpg", frame, [
+        cv.IMWRITE_JPEG_QUALITY,
+        config.compressionQuality,
+      ])
       .toString("base64");
     ws.send(JSON.stringify({ video: encoded }));
   }, 1000 / config.cameraFPS);
