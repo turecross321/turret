@@ -42,20 +42,40 @@ function setServoX(x) {
   if (!servo_x) {
     initializeGpio();
   }
-  servo_x.servoWrite(calculateServoPulse(x));
+  const pulse = calculateServoPulse(
+    config.range_servo_x,
+    x,
+    config.invert_servo_x
+  );
+  servo_x.servoWrite(pulse);
 }
 
 function setServoY(y) {
   if (!servo_y) {
     initializeGpio();
   }
-  servo_y.servoWrite(calculateServoPulse(y));
+  const pulse = calculateServoPulse(
+    config.range_servo_y,
+    y,
+    config.invert_servo_y
+  );
+  servo_y.servoWrite(pulse);
 }
 
-function calculateServoPulse(factor) {
-  const multiplier = (config.servo_pulse_max - config.servo_pulse_min) / 2;
-  const mid = config.servo_pulse_min + multiplier;
-  const pulse = Math.round(mid - factor * multiplier);
+function calculateServoPulse(range, factor, invert) {
+  const pulse_min = 600;
+  const pulse_max = 2400;
+
+  const multiplier = ((pulse_max - pulse_min) / 2) * range;
+  const mid = pulse_min + multiplier;
+
+  let add = factor * multiplier;
+
+  if (invert) {
+    add = -1 * add;
+  }
+
+  const pulse = Math.round(mid + add);
   return pulse;
 }
 
