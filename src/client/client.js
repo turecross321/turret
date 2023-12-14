@@ -38,12 +38,12 @@ function onClose(event) {
 }
 
 function onSliderXChange(event) {
-  x = event.target.value;
+  x = event.target.value / event.target.max;
   runCommand("x " + x);
 }
 
 function onSliderYChange(event) {
-  y = event.target.value;
+  y = event.target.value / event.target.max;
   runCommand("y " + y);
 }
 

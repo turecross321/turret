@@ -55,7 +55,7 @@ function setServoY(y) {
 function calculateServoPulse(factor) {
   const multiplier = (config.servo_pulse_max - config.servo_pulse_min) / 2;
   const mid = config.servo_pulse_min + multiplier;
-  return mid + factor * multiplier;
+  return mid - factor * multiplier; // minus because i might've mounted it backwards and can't be bothered to fix it... whoops
 }
 
 function setShooting(value) {
