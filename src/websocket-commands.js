@@ -1,3 +1,4 @@
+const Gpio = require("pigpio").Gpio;
 const config = require("./config").config;
 
 exports.processMessage = (ws, message) => {
@@ -23,12 +24,24 @@ exports.processMessage = (ws, message) => {
   }
 };
 
+let servo_x;
+let servo_y;
+function initializeGpio() {
+  servo_x = new Gpio(config.pin_servo_x, { mode: Gpio.OUTPUT });
+  servo_y = new Gpio(config.pin_servo_y, { mode: Gpio.OUTPUT });
+}
+
 function sendMessage(ws, content) {
   ws.send({ message: content });
 }
 
 function setServos(x, y) {
-  console.log("x: %d| y: %d", x, y);
+  if (!servo_x || !servo_y) {
+    initializeGpio();
+  }
+
+  servo_x.servoWrite(x);
+  servo_y.servoWrite(y);
 }
 
 function setShooting(value) {
