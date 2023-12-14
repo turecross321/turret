@@ -1,5 +1,5 @@
-//const url = window.location.hostname + ":" + window.location.port;
-const url = "192.168.1.195:5000";
+const url = window.location.hostname + ":" + window.location.port;
+//const url = "192.168.1.195:5000";
 
 let socket = null;
 function connect() {
