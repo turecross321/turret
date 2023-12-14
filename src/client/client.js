@@ -1,4 +1,5 @@
-const url = window.location.hostname + ":" + window.location.port;
+//const url = window.location.hostname + ":" + window.location.port;
+const url = "192.168.1.195:5000";
 
 let socket = null;
 function connect() {
@@ -34,6 +35,16 @@ function onClose(event) {
   );
 
   updateElements(false);
+}
+
+function onSliderXChange(event) {
+  x = event.target.value;
+  runCommand("x " + x);
+}
+
+function onSliderYChange(event) {
+  y = event.target.value;
+  runCommand("y " + y);
 }
 
 function updateElements(connected) {

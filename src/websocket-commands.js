@@ -2,15 +2,18 @@ const Gpio = require("pigpio").Gpio;
 const config = require("./config").config;
 
 exports.processMessage = (ws, message) => {
-  args = message.data.split(" ");
-  command = args[0].toLowerCase();
-  params = args.slice(1);
+  const args = message.data.split(" ");
+  const command = args[0].toLowerCase();
+  const params = args.slice(1);
 
   switch (command) {
-    case "servo":
+    case "x":
       const x = params[0];
-      const y = params[1];
-      setServos(x, y);
+      setServoX(x);
+      break;
+    case "y":
+      const y = params[0];
+      setServoY(y);
       break;
     case "shoot":
       const value = params[0];
@@ -35,13 +38,24 @@ function sendMessage(ws, content) {
   ws.send({ message: content });
 }
 
-function setServos(x, y) {
-  if (!servo_x || !servo_y) {
+function setServoX(x) {
+  if (!servo_x) {
     initializeGpio();
   }
+  servo_x.servoWrite(calculateServoPulse(x));
+}
 
-  servo_x.servoWrite(x);
-  servo_y.servoWrite(y);
+function setServoY(y) {
+  if (!servo_y) {
+    initializeGpio();
+  }
+  servo_y.servoWrite(calculateServoPulse(y));
+}
+
+function calculateServoPulse(factor) {
+  const multiplier = (config.servo_pulse_max - config.servo_pulse_min) / 2;
+  const mid = config.servo_pulse_min + multiplier;
+  return mid + factor * multiplier;
 }
 
 function setShooting(value) {
