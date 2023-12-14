@@ -66,10 +66,10 @@ function calculateServoPulse(range, factor, invert) {
   const pulse_min = 600;
   const pulse_max = 2400;
 
-  const multiplier = ((pulse_max - pulse_min) / 2) * range;
+  const multiplier = (pulse_max - pulse_min) / 2;
   const mid = pulse_min + multiplier;
 
-  let add = factor * multiplier;
+  let add = factor * multiplier * range;
 
   if (invert) {
     add = -1 * add;
