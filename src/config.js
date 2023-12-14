@@ -12,7 +12,7 @@ exports.config = {
   range_servo_x: 0.5,
   range_servo_y: 0.3,
   invert_servo_x: true,
-  invert_servo_y: false,
+  invert_servo_y: true,
 
   pin_shoot: 2,
 };
