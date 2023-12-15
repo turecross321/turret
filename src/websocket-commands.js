@@ -36,7 +36,7 @@ function initializeGpio() {
 }
 
 function sendMessage(ws, content) {
-  ws.send(JSON.parse({ message: content }));
+  ws.send(JSON.stringify({ message: content }));
 }
 
 function setServoX(x) {
