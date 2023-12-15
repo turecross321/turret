@@ -2,13 +2,9 @@ const Gpio = require("pigpio").Gpio;
 const config = require("./config").config;
 
 exports.processMessage = (ws, message) => {
-  console.log(message.data);
   const args = message.data.split(" ");
   const command = args[0].toLowerCase();
-  let params = [];
-  if (args.length > 1) {
-    params = args.slice(1);
-  }
+  const params = args.slice(1);
 
   switch (command) {
     case "x":
@@ -28,6 +24,7 @@ exports.processMessage = (ws, message) => {
       break;
     default:
       sendMessage(ws, "Unknown command. Type 'HELP' for help.");
+      break;
   }
 };
 
@@ -39,7 +36,7 @@ function initializeGpio() {
 }
 
 function sendMessage(ws, content) {
-  ws.send({ message: content });
+  ws.send(JSON.parse({ message: content }));
 }
 
 function setServoX(x) {
