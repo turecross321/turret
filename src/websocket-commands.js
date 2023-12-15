@@ -77,7 +77,11 @@ function calculateServoPulse(range, factor, invert) {
   }
 
   const pulse = Math.round(mid + add);
-  return pulse;
+  return clamp(pulse, pulse_min, pulse_max);
+}
+
+function clamp(val, min, max) {
+  return val > max ? max : val < min ? min : val;
 }
 
 function setShooting(value) {
