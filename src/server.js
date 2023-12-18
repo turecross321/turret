@@ -6,6 +6,7 @@ const path = require("path");
 const websocketController = require("./websocket-commands");
 const config = require("./config").config;
 const cv = require("@u4/opencv4nodejs");
+const { clearInterval } = require("timers");
 
 const wss = new WebSocket.Server({ server: server });
 const maxClients = 1;
@@ -23,19 +24,13 @@ wss.on("connection", function connection(ws) {
   }
 
   clients.push(ws);
-  console.log("new client connected");
+  console.log("New client connected");
 
   ws.onmessage = function (message) {
     websocketController.processMessage(ws, message);
   };
 
-  ws.on("close", function close(code, reason) {
-    clients = clients.filter(function (item) {
-      return item !== ws;
-    });
-  });
-
-  function sendVideoFrame() {
+  const videoInterval = setInterval(() => {
     try {
       let frame = vCap.read();
       const encoded = cv
@@ -45,14 +40,18 @@ wss.on("connection", function connection(ws) {
         ])
         .toString("base64");
       ws.send(JSON.stringify({ video: encoded }));
-    } catch (error) {}
-
-    if (ws.readyState === ws.OPEN) {
-      setTimeout(sendVideoFrame, 1000 / config.cameraFPS);
+    } catch (error) {
+      console.log(error);
     }
-  }
+  }, 1000 / config.cameraFPS);
 
-  sendVideoFrame();
+  ws.on("close", function close(code, reason) {
+    clearInterval(videoInterval);
+    clients = clients.filter(function (item) {
+      return item !== ws;
+    });
+    console.log("Client disconnected");
+  });
 });
 
 app.get("/", function (req, res) {
